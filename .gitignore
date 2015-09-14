@@ -1,0 +1,6 @@
+*.hi
+*.o
+
+# executables...
+p089/Roman
+p225/do
