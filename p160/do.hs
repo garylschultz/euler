@@ -11,6 +11,8 @@
 -- (1.83 secs, 552894216 bytes)
 
 
+import Debug.Trace
+
 -- our normal factorial uses arbitrarily large integers
 factorial :: Integer -> Integer
 factorial n
@@ -136,6 +138,7 @@ main = do
     print $ "answer to the question is..."
     print $ factorial' 5 (10^12)
     print $ conjecture 5
+    print $ better 6
 
 
 -- bonus...
@@ -161,3 +164,25 @@ conjecture k
         n = if length f == 1 then head f else error "didn't work"
         -- If there is a unique limited integer one digit longer, and the
         -- conjecture is true, then that has to be the right one.
+
+
+-- Better way is to compute the next digit numerically, for it must
+-- solve 2 d_0 d_p + r == d_p mod 10, where r is the contribution to the
+-- 10^p digit from the square of the lower order terms.
+-- By the way, this also shows that the number is unique, so the check
+-- in the previous method was unnecessary.
+better :: UseInt -> LTD
+better k
+    | k <= 1    = ltd 1 6
+    | otherwise = n
+    where
+        tk = 10^(k-1)
+        bb = better (k-1)
+        b = numberOf bb
+        r = (b^2 `div` tk) `mod` 10 -- contribution from known part
+        d = 10 - r  -- new digit from 1..10
+        n = ltd k (b + d*tk)
+-- After I did all of this, I looked the sequence up in the OEIS database,
+-- and it is listed there as A018248. References for a few uses are given,
+-- but nothing related to the 10^(2k) factorial stuff how I found it.
+
